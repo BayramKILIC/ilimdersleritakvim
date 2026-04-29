@@ -11,6 +11,12 @@
 body{font-family:'Lora',serif;background:#1e1408;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px;gap:24px}
 h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;text-transform:uppercase}
 .layout{display:flex;gap:24px;align-items:flex-start;flex-wrap:nowrap;justify-content:center;width:100%;max-width:1200px}
+@media(max-width:900px){
+  .layout{flex-direction:column;align-items:center;flex-wrap:wrap}
+  .form-panel{width:100%;max-width:500px}
+  #card-scaler{transform:scale(0.38);transform-origin:top left}
+  #card-scaler-outer{width:calc(810px * 0.38);height:calc(1080px * 0.38)}
+}
 .form-panel{background:#2e1f0a;border:1px solid #6b4c1e;border-radius:12px;padding:20px;width:310px;flex-shrink:0}
 .form-section{border-bottom:1px solid #4a3010;padding-bottom:14px;margin-bottom:14px}
 .form-section:last-child{border-bottom:none;margin-bottom:0}
