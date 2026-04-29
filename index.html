@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İlim Dersleri - Kart Oluşturucu</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lora',serif;background:#1e1408;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px;gap:24px}
+h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;text-transform:uppercase}
+.layout{display:flex;gap:24px;align-items:flex-start;flex-wrap:nowrap;justify-content:center;width:100%;max-width:1200px}
+.form-panel{background:#2e1f0a;border:1px solid #6b4c1e;border-radius:12px;padding:20px;width:310px;flex-shrink:0}
+.form-section{border-bottom:1px solid #4a3010;padding-bottom:14px;margin-bottom:14px}
+.form-section:last-child{border-bottom:none;margin-bottom:0}
+.section-title{color:#d4a843;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px}
+.field{margin-bottom:10px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;color:#b07830;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.field input[type=text],.field textarea,.field select{width:100%;background:#1a1005;border:1px solid #5a3c14;border-radius:6px;color:#f0ddb0;font-family:'Lora',serif;font-size:12px;padding:7px 9px;outline:none;transition:border-color .15s}
+.field input[type=text]:focus,.field textarea:focus,.field select:focus{border-color:#d4a843}
+.field textarea{resize:vertical;min-height:72px;line-height:1.5}
+.field-row{display:flex;gap:7px}
+.field-row .field{flex:1;min-width:0}
+.slider-row{display:flex;align-items:center;gap:10px}
+.slider-row input[type=range]{flex:1;accent-color:#d4a843}
+.slider-val{color:#d4a843;font-family:'Cinzel',serif;font-size:12px;min-width:32px;text-align:right}
+.bg-selector{display:flex;gap:8px}
+.bg-slot{flex:1;position:relative;min-width:0}
+.bg-slot input[type=file]{display:none}
+.bg-preview-btn{width:100%;height:78px;background:#1a1005;border:1.5px solid #5a3c14;border-radius:8px;padding:6px 4px 25px;text-align:center;transition:border-color .15s,background .15s;cursor:pointer;position:relative;overflow:hidden}
+.bg-slot.loaded .bg-preview-btn{border-color:#c8902a}
+.bg-slot.active .bg-preview-btn{border-color:#d4a843;background:#2a1a06}
+.bg-preview{display:block;width:100%;height:38px;object-fit:cover;border-radius:4px;margin-bottom:4px;background:#3a2810}
+.bg-lbl{display:block;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;color:#b07830;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bg-slot.loaded .bg-lbl{color:#c8a050}
+.bg-slot.active .bg-lbl{color:#f0c060}
+.bg-change{position:absolute;left:6px;right:6px;bottom:5px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:rgba(212,168,67,.12);color:#c8902a;font-family:'Lora',serif;font-size:8.5px;letter-spacing:.8px;text-transform:uppercase;cursor:pointer}
+.channel-list{display:flex;flex-direction:column;gap:9px}
+.channel-item{display:flex;align-items:flex-start;gap:8px;cursor:pointer}
+.channel-item input[type=checkbox]{width:14px;height:14px;accent-color:#d4a843;cursor:pointer;flex-shrink:0;margin-top:2px}
+.ch-label{color:#d0a060;font-size:11px;line-height:1.3}
+.ch-handle{color:#7a5830;font-size:9.5px}
+.btn-export{width:100%;background:#d4a843;border:none;border-radius:8px;color:#1a1005;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:2px;padding:11px;cursor:pointer;margin-top:4px;transition:background .2s}
+.btn-export:hover{background:#e8bd55}
+.btn-export:disabled{background:#7a6020;color:#3a3010;cursor:not-allowed}
+#export-status{color:#d4a843;font-size:11px;font-family:'Lora',serif;text-align:center;min-height:16px;margin-top:6px}
+#card-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0}
+#card-scaler{transform:scale(0.55);transform-origin:top left;width:810px;height:1080px}
+#card-scaler-outer{width:calc(810px * 0.55);height:calc(1080px * 0.55);overflow:visible;flex-shrink:0}
+#card{width:810px;height:1080px;position:relative;overflow:hidden;font-family:'Lora',serif;border-radius:6px;background:#f5ead4;background-size:cover;background-position:center;background-repeat:no-repeat}
+.card-inner{position:relative;z-index:1;padding:237px 122px 147px;display:flex;flex-direction:column;align-items:center;height:100%;overflow:visible}
+.logo-text-ilim{display:none}
+.logo-text-dersleri{display:none}
+.date-box{border:3px solid rgba(200,144,42,.92);border-radius:24px;width:100%;display:flex;align-items:stretch;margin-bottom:20px;overflow:visible;background:transparent;box-shadow:0 12px 33px rgba(92,58,16,.13);position:relative;flex-shrink:0}
+.date-cell{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px 6px;gap:6px;position:relative;min-height:179px;background:transparent;vertical-align:middle}
+.date-cell+.date-cell::before{content:'';position:absolute;left:0;top:14%;bottom:14%;width:2px;background:linear-gradient(to bottom,transparent,#c8902a,transparent)}
+.date-num{font-family:'Cinzel',serif;font-size:66px;font-weight:700;color:#b97c19;line-height:.92;text-shadow:0 1px 0 rgba(255,255,255,.45)}
+.date-month{font-size:17px;color:#5c3a10;letter-spacing:1.2px;font-weight:700;text-transform:uppercase}
+.date-badge{background:linear-gradient(135deg,#b97c19,#d8a949);color:#fff7df;font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:1.2px;border-radius:999px;padding:6px 18px;box-shadow:0 4px 12px rgba(92,58,16,.15)}
+.day-badge{background:linear-gradient(135deg,#5c3a10,#9a6a30);color:#fff7df;font-family:'Cinzel',serif;font-size:18px;font-weight:700;letter-spacing:1.2px;border-radius:999px;padding:8px 20px;margin-bottom:3px;box-shadow:0 4px 13px rgba(92,58,16,.16)}
+.hijri-label{font-size:16px;color:#5c3a10;font-style:italic}
+.hijri-year-big{font-family:'Cinzel',serif;font-size:43px;font-weight:700;color:#5c3a10;line-height:.95}
+.ornament{color:#c8902a;font-size:21px;line-height:1}
+.arabic-line{font-family:'Amiri',serif;font-size:47px;color:transparent;text-align:center;direction:rtl;line-height:1.1;margin:27px 0;flex-shrink:0;visibility:hidden}
+.hadith-section{width:648px;max-width:648px;margin-bottom:12px;min-height:0;margin-top:15px}
+.prophet-label{background:rgba(245,234,212,.32);border:3px solid #c8902a;border-radius:999px;font-family:'Lora',serif;font-size:29px;font-weight:700;color:#5c3a10;letter-spacing:0.5px;padding:8px 27px;text-align:center;display:block;text-transform:none;margin:0 auto 15px;min-width:168px}
+.hadith-quote-wrap{position:relative;padding:0 6px;margin-top:15px}
+.q-open,.q-close{position:absolute;font-family:'Amiri',serif;font-size:54px;color:#c8902a;line-height:1;opacity:.75}
+.q-open{top:-15px;left:0}
+.q-close{bottom:-24px;right:0}
+.hadith-text{font-family:'Lora',serif;color:#3a2008;text-align:center;line-height:1.45;padding:0 6px;white-space:pre-line}
+.hadith-highlight{color:#c8902a;font-weight:600}
+.source-line{display:flex;align-items:center;justify-content:center;gap:11px;margin-top:12px}
+.source-dots{display:flex;gap:7px;align-items:center}
+.dot{width:6px;height:6px;background:#c8902a;border-radius:50%}
+.diamond{width:9px;height:9px;background:#c8902a;transform:rotate(45deg)}
+.source-badge{border:3px solid #c8902a;border-radius:999px;font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:#5c3a10;letter-spacing:1.2px;padding:8px 27px;min-width:168px;text-align:center;background:rgba(245,234,212,.32)}
+.divider{display:none}
+#card-footer{position:absolute;left:50%;bottom:162px;transform:translateX(-50%);width:40%;max-width:324px;border:2px solid #c8902a;border-radius:12px;overflow:visible;background:#f8ecd0;display:flex;flex-direction:column;flex-wrap:nowrap;margin-top:0;z-index:2}
+.footer-cell{width:100%;min-width:0;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;column-gap:9px;padding:12px;border-right:none;border-bottom:1px solid rgba(200,144,42,.4);text-align:center;position:relative}
+.tg-icon{position:static;width:30px;height:30px;background:#c8902a;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tg-icon svg{width:15px;height:15px;fill:#f5ead4}
+.footer-name{font-family:'Cinzel',serif;font-size:16px;color:#5c3a10;font-weight:700;letter-spacing:.1px;line-height:1.18;text-align:center;white-space:normal;overflow-wrap:normal}
+.footer-handle{font-family:'Lora',serif;font-size:14px;color:#9a6a30;text-align:center;white-space:normal;overflow-wrap:anywhere;line-height:1.12}
+.footer-text{width:100%;min-width:0;text-align:center;overflow:visible;display:flex;flex-direction:column;align-items:center}
+.scale-note{color:#7a5820;font-size:11px;font-family:'Lora',serif}
+.content-lift{transform:translateY(-15px)}
+</style>
+</head>
+<body>
+<h1>İlim Dersleri · Kart Oluşturucu</h1>
+<div class="layout">
+<div class="form-panel">
+  <div class="form-section">
+    <div class="section-title">Arkaplan</div>
+    <div class="bg-selector">
+      <div class="bg-slot" id="bg-btn-0">
+        <input type="file" id="bg-input-0" accept="image/*" onchange="loadBg(0,this)">
+        <button type="button" class="bg-preview-btn" onclick="chooseOrSelectBg(0)">
+          <img class="bg-preview" id="bg-prev-0" src="" alt="" style="display:none">
+          <span class="bg-lbl" id="bg-lbl-0">BG 1</span>
+        </button>
+        <label class="bg-change" for="bg-input-0">Değiştir</label>
+      </div>
+      <div class="bg-slot" id="bg-btn-1">
+        <input type="file" id="bg-input-1" accept="image/*" onchange="loadBg(1,this)">
+        <button type="button" class="bg-preview-btn" onclick="chooseOrSelectBg(1)">
+          <img class="bg-preview" id="bg-prev-1" src="" alt="" style="display:none">
+          <span class="bg-lbl" id="bg-lbl-1">BG 2</span>
+        </button>
+        <label class="bg-change" for="bg-input-1">Değiştir</label>
+      </div>
+      <div class="bg-slot" id="bg-btn-2">
+        <input type="file" id="bg-input-2" accept="image/*" onchange="loadBg(2,this)">
+        <button type="button" class="bg-preview-btn" onclick="chooseOrSelectBg(2)">
+          <img class="bg-preview" id="bg-prev-2" src="" alt="" style="display:none">
+          <span class="bg-lbl" id="bg-lbl-2">BG 3</span>
+        </button>
+        <label class="bg-change" for="bg-input-2">Değiştir</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="section-title">Tarih</div>
+    <div class="field">
+      <label>Gün</label>
+      <select id="gun">
+        <option>CUMA</option><option>PAZARTESİ</option><option>SALI</option>
+        <option>ÇARŞAMBA</option><option>PERŞEMBE</option><option>CUMARTESİ</option><option>PAZAR</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Gün</label><input type="text" id="gr-gun" value="24"></div>
+      <div class="field"><label>Ay</label><input type="text" id="gr-ay" value="NİSAN"></div>
+      <div class="field"><label>Yıl</label><input type="text" id="gr-yil" value="2026"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>H. Gün</label><input type="text" id="hc-gun" value="07"></div>
+      <div class="field"><label>H. Ay</label><input type="text" id="hc-ay" value="ZİLKÂDE"></div>
+      <div class="field"><label>H. Yıl</label><input type="text" id="hc-yil" value="1447"></div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="section-title">Hadis</div>
+    <div class="field"><label>Metin</label><textarea id="hadis-metin">Müslümanın her şeyi diğer Müslümana haramdır: kanı, malı ve onuru.</textarea></div>
+    <div class="field"><label>Vurgu (altın)</label><input type="text" id="hadis-vurgu" value="kanı, malı ve onuru."></div>
+    <div class="field">
+      <label>Yazı boyutu</label>
+      <div class="slider-row"><input type="range" id="hadis-size" min="16" max="36" value="26" step="1"><span class="slider-val" id="hadis-size-val">26px</span></div>
+    </div>
+    <div class="field"><label>Kaynak</label><input type="text" id="kaynak" value="MÜSLİM, 2564"></div>
+  </div>
+  <div class="form-section">
+    <div class="section-title">Kanallar</div>
+    <div class="channel-list">
+      <label class="channel-item"><input type="checkbox" id="ch0" checked onchange="renderFooter()"><div><div class="ch-label">İlim Dersleri</div><div class="ch-handle">telegram.me/IlimDersleri</div></div></label>
+      <label class="channel-item"><input type="checkbox" id="ch1" checked onchange="renderFooter()"><div><div class="ch-label">Hadis Ehli Konya</div><div class="ch-handle">telegram.me/HadisEhli_Konya</div></div></label>
+      <label class="channel-item"><input type="checkbox" id="ch2" onchange="renderFooter()"><div><div class="ch-label">Hadis Ehli Kayseri</div><div class="ch-handle">telegram.me/AlimlerinSozleri</div></div></label>
+      <label class="channel-item"><input type="checkbox" id="ch3" onchange="renderFooter()"><div><div class="ch-label">Hadis Ehli Erzurum</div><div class="ch-handle">telegram.me/hadisehlierzurum</div></div></label>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>Hauteur canaux</label>
+      <div class="slider-row">
+        <input type="range" id="footer-bottom" min="90" max="320" value="162" step="1">
+        <span class="slider-val" id="footer-bottom-val">162px</span>
+      </div>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>Hauteur hadith</label>
+      <div class="slider-row">
+        <input type="range" id="hadith-top" min="-50" max="150" value="15" step="1">
+        <span class="slider-val" id="hadith-top-val">15px</span>
+      </div>
+    </div>
+  </div>
+  <button class="btn-export" id="btn-export" onclick="exportCard()">⬇ PNG Olarak İndir</button>
+  <div id="export-status"></div>
+</div>
+<div id="card-wrap">
+  <div id="card-scaler-outer">
+    <div id="card-scaler">
+  <div id="card">
+    <div class="card-inner">
+<div class="date-box content-lift">
+        <div class="date-cell"><div class="date-num" id="c-gr-gun">24</div><div class="date-month" id="c-gr-ay">NİSAN</div><div class="date-badge" id="c-gr-yil">2026</div></div>
+        <div class="date-cell"><div class="date-num" id="c-hc-gun">07</div><div class="date-month" id="c-hc-ay">ZİLKÂDE</div><div class="date-badge" id="c-hc-yil">1447</div></div>
+        <div class="date-cell"><div class="day-badge" id="c-gun">CUMA</div><div class="hijri-label">Hicrî Takvim</div><div class="hijri-year-big" id="c-hc-yil2">1447</div></div>
+      </div>
+      <div class="arabic-line content-lift">التَّقْوِيمُ الْهِجْرِيّ</div>
+      <div class="hadith-section content-lift">
+        <div class="prophet-label">Peygamberimiz ﷺ şöyle buyurdu:</div>
+        <div class="hadith-quote-wrap">
+          <span class="q-open">“</span>
+          <div class="hadith-text" id="c-hadis-text" style="font-size:26px"></div>
+          <span class="q-close">”</span>
+        </div>
+        <div class="source-line"><div class="source-dots"><div class="diamond"></div><div class="dot"></div></div><div class="source-badge" id="c-kaynak">MÜSLİM, 2564</div><div class="source-dots"><div class="dot"></div><div class="diamond"></div></div></div>
+      </div>
+      <div class="divider content-lift"></div>
+      <div id="card-footer"></div>
+    </div>
+  </div>
+    </div>
+  </div>
+  <div class="scale-note">Önizleme 55% · Export 1620×2160px</div>
+</div>
+<script>
+const TG=`<svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.613c-.152.676-.554.84-1.123.523l-3.1-2.284-1.496 1.44c-.166.165-.305.305-.625.305l.223-3.165 5.754-5.194c.25-.222-.054-.345-.387-.123L7.16 14.39 4.1 13.42c-.668-.209-.68-.668.14-.99l10.9-4.204c.555-.2 1.042.136.862.99l.56.032z"/></svg>`;
+const CHANNELS=[
+  {name:'İLİM DERSLERİ',handle:'telegram.me/IlimDersleri'},
+  {name:'HADİS EHLİ KONYA',handle:'telegram.me/HadisEhli_Konya'},
+  {name:'HADİS EHLİ KAYSERİ',handle:'telegram.me/AlimlerinSozleri'},
+  {name:'HADİS EHLİ ERZURUM',handle:'telegram.me/hadisehlierzurum'},
+];
+const bgData=[null,null,null];
+let activeBg=-1;
+
+// Auto-load bg1.jpg from server
+(function(){
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function(){
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    bgData[0] = canvas.toDataURL('image/jpeg', 0.95);
+    selectBg(0);
+    document.getElementById('bg-btn-0').classList.add('loaded');
+    const prev = document.getElementById('bg-prev-0');
+    prev.src = bgData[0];
+    prev.style.display = 'block';
+    document.getElementById('bg-lbl-0').textContent = 'bg1.jpg';
+  };
+  img.src = 'bg1.jpg';
+})();
+
+function chooseOrSelectBg(idx){
+  if(bgData[idx]){selectBg(idx);return;}
+  document.getElementById('bg-input-'+idx).click();
+}
+
+function loadBg(idx,input){
+  if(!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    bgData[idx]=e.target.result;
+    const prev=document.getElementById('bg-prev-'+idx);
+    prev.src=e.target.result;
+    prev.style.display='block';
+    document.getElementById('bg-lbl-'+idx).textContent=input.files[0].name.replace(/\.[^.]+$/,'').substring(0,12);
+    document.getElementById('bg-btn-'+idx).classList.add('loaded');
+    selectBg(idx);
+    input.value='';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function selectBg(idx){
+  if(!bgData[idx])return;
+  activeBg=idx;
+  document.querySelectorAll('.bg-slot').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  document.getElementById('card').style.backgroundImage='url('+bgData[idx]+')';
+}
+
+function renderFooter(){
+  const footer=document.getElementById('card-footer');
+  const active=CHANNELS.filter((_,i)=>document.getElementById('ch'+i).checked);
+  if(!active.length){footer.innerHTML='';footer.style.border='none';return;}
+  footer.style.border='1.5px solid #c8902a';
+  footer.innerHTML=active.map((ch,i)=>{
+    const isLast=i===active.length-1;
+    return`<div class="footer-cell" style="${isLast?'border-bottom:none;':''}"><div class="tg-icon">${TG}</div><div class="footer-text"><div class="footer-name">${ch.name}</div><div class="footer-handle">${ch.handle}</div></div></div>`;
+  }).join('');
+}
+renderFooter();
+
+[['gun','c-gun'],['gr-gun','c-gr-gun'],['gr-ay','c-gr-ay'],['gr-yil','c-gr-yil'],['hc-gun','c-hc-gun'],['hc-ay','c-hc-ay'],['hc-yil','c-hc-yil'],['hc-yil','c-hc-yil2'],['kaynak','c-kaynak']].forEach(([a,b])=>{
+  const el=document.getElementById(a),target=document.getElementById(b);
+  if(el&&target)el.addEventListener('input',()=>target.textContent=el.value);
+});
+
+function renderHadith(){
+  const text=document.getElementById('hadis-metin').value;
+  const highlight=document.getElementById('hadis-vurgu').value.trim();
+  const target=document.getElementById('c-hadis-text');
+  target.textContent='';
+  if(!highlight){target.textContent=text;return;}
+  const index=text.indexOf(highlight);
+  if(index>=0){
+    target.append(document.createTextNode(text.slice(0,index)));
+    const span=document.createElement('span');
+    span.className='hadith-highlight';
+    span.textContent=highlight;
+    target.append(span,document.createTextNode(text.slice(index+highlight.length)));
+    return;
+  }
+  target.append(document.createTextNode(text));
+  target.append(document.createElement('br'));
+  const span=document.createElement('span');
+  span.className='hadith-highlight';
+  span.textContent=highlight;
+  target.append(span);
+}
+
+document.getElementById('hadis-metin').addEventListener('input',renderHadith);
+document.getElementById('hadis-vurgu').addEventListener('input',renderHadith);
+renderHadith();
+
+document.getElementById('hadis-size').addEventListener('input',function(){
+  document.getElementById('hadis-size-val').textContent=this.value+'px';
+  document.getElementById('c-hadis-text').style.fontSize=this.value+'px';
+});
+
+document.getElementById('footer-bottom').addEventListener('input',function(){
+  document.getElementById('footer-bottom-val').textContent=this.value+'px';
+  document.getElementById('card-footer').style.bottom=this.value+'px';
+});
+
+document.getElementById('hadith-top').addEventListener('input',function(){
+  document.getElementById('hadith-top-val').textContent=this.value+'px';
+  document.querySelector('.hadith-section').style.marginTop=this.value+'px';
+});
+
+function setStatus(msg,color){
+  const status=document.getElementById('export-status');
+  status.textContent=msg;
+  status.style.color=color||'#d4a843';
+}
+
+function cleanFilePart(value){
+  return (value||'').toString().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[\\/:*?"<>|]+/g,'-')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .replace(/^-|-$/g,'')||'tarih';
+}
+
+function exportCard(){
+  const btn=document.getElementById('btn-export');
+  btn.disabled=true;
+  setStatus('Hazırlanıyor...','#d4a843');
+
+  const card=document.getElementById('card');
+  const scaler=document.getElementById('card-scaler');
+  const scalerOuter=document.getElementById('card-scaler-outer');
+  const scale=2;
+  const W=card.offsetWidth*scale;
+  const H=card.offsetHeight*scale;
+
+  // Temporarily remove preview scale transform
+  const savedTransform=scaler.style.transform;
+  const savedOuterW=scalerOuter.style.width;
+  const savedOuterH=scalerOuter.style.height;
+  scaler.style.transform='none';
+  scalerOuter.style.width=card.offsetWidth+'px';
+  scalerOuter.style.height=card.offsetHeight+'px';
+
+  // Temporarily remove card background so html2canvas captures transparency
+  const savedBg=card.style.background;
+  const savedBgImg=card.style.backgroundImage;
+  card.style.background='transparent';
+  card.style.backgroundImage='none';
+
+  // Capture the card HTML on transparent canvas
+  html2canvas(card,{
+    scale:scale,
+    allowTaint:true,
+    useCORS:false,
+    backgroundColor:null,
+    logging:false,
+    imageTimeout:0,
+    width:card.offsetWidth,
+    height:card.offsetHeight,
+  }).then(htmlCanvas=>{
+
+    // Restore card background and preview scale
+    card.style.background=savedBg;
+    card.style.backgroundImage=savedBgImg;
+    scaler.style.transform=savedTransform;
+    scalerOuter.style.width=savedOuterW;
+    scalerOuter.style.height=savedOuterH;
+
+    // Create final canvas
+    const final=document.createElement('canvas');
+    final.width=W;
+    final.height=H;
+    const ctx=final.getContext('2d');
+
+    // Step 1: draw background image if loaded
+    const drawFinal=()=>{
+      ctx.drawImage(htmlCanvas,0,0);
+      const fileDate=[document.getElementById('gr-gun').value,
+        document.getElementById('gr-ay').value,
+        document.getElementById('gr-yil').value].map(cleanFilePart).join('-');
+      const a=document.createElement('a');
+      a.download=`ilim-${fileDate}-1080x1440.png`;
+      a.href=final.toDataURL('image/png');
+      a.click();
+      setStatus('✓ İndirildi!','#6dbf6d');
+      btn.disabled=false;
+      setTimeout(()=>setStatus(''),3000);
+    };
+
+    if(activeBg>=0 && bgData[activeBg]){
+      const img=new Image();
+      img.onload=()=>{
+        // Draw bg covering full canvas
+        const iw=img.naturalWidth, ih=img.naturalHeight;
+        const scale_fit=Math.max(W/iw, H/ih);
+        const sw=iw*scale_fit, sh=ih*scale_fit;
+        const sx=(W-sw)/2, sy=(H-sh)/2;
+        ctx.drawImage(img, sx, sy, sw, sh);
+        drawFinal();
+      };
+      img.onerror=drawFinal;
+      img.src=bgData[activeBg];
+    } else {
+      // No bg: fill with card base color
+      ctx.fillStyle='#f5ead4';
+      ctx.fillRect(0,0,W,H);
+      drawFinal();
+    }
+
+  }).catch(err=>{
+    card.style.background=savedBg;
+    card.style.backgroundImage=savedBgImg;
+    scaler.style.transform=savedTransform;
+    scalerOuter.style.width=savedOuterW;
+    scalerOuter.style.height=savedOuterH;
+    setStatus('Hata: '+err.message,'#e07070');
+    btn.disabled=false;
+  });
+}
+</script>
+</body>
+</html>
