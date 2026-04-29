@@ -144,11 +144,11 @@ h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;te
   </div>
   <div class="form-section">
     <div class="section-title">Hadis</div>
-    <div class="field"><label>Metin</label><textarea id="hadis-metin">Müslümanın her şeyi diğer Müslümana haramdır: kanı, malı ve onuru.</textarea></div>
+    <div class="field"><label>Metin</label><textarea id="hadis-metin">Müslümanın her şeyi diğer Müslümana haramdır: kanı, malı ve onuru. Müslümanın her şeyi diğer Müslümana haramdır: kanı, malı ve onuru. Müslümanın her şeyi diğer Müslümana haramdır: kanı, malı ve onuru.</textarea></div>
     <div class="field"><label>Vurgu (altın)</label><input type="text" id="hadis-vurgu" value="kanı, malı ve onuru."></div>
     <div class="field">
       <label>Yazı boyutu</label>
-      <div class="slider-row"><input type="range" id="hadis-size" min="16" max="36" value="26" step="1"><span class="slider-val" id="hadis-size-val">26px</span></div>
+      <div class="slider-row"><input type="range" id="hadis-size" min="16" max="36" value="28" step="1"><span class="slider-val" id="hadis-size-val">28px</span></div>
     </div>
     <div class="field"><label>Kaynak</label><input type="text" id="kaynak" value="MÜSLİM, 2564"></div>
   </div>
@@ -156,22 +156,22 @@ h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;te
     <div class="section-title">Kanallar</div>
     <div class="channel-list">
       <label class="channel-item"><input type="checkbox" id="ch0" checked onchange="renderFooter()"><div><div class="ch-label">İlim Dersleri</div><div class="ch-handle">telegram.me/IlimDersleri</div></div></label>
-      <label class="channel-item"><input type="checkbox" id="ch1" checked onchange="renderFooter()"><div><div class="ch-label">Hadis Ehli Konya</div><div class="ch-handle">telegram.me/HadisEhli_Konya</div></div></label>
+      <label class="channel-item"><input type="checkbox" id="ch1" onchange="renderFooter()"><div><div class="ch-label">Hadis Ehli Konya</div><div class="ch-handle">telegram.me/HadisEhli_Konya</div></div></label>
       <label class="channel-item"><input type="checkbox" id="ch2" onchange="renderFooter()"><div><div class="ch-label">Hadis Ehli Kayseri</div><div class="ch-handle">telegram.me/AlimlerinSozleri</div></div></label>
       <label class="channel-item"><input type="checkbox" id="ch3" onchange="renderFooter()"><div><div class="ch-label">Hadis Ehli Erzurum</div><div class="ch-handle">telegram.me/hadisehlierzurum</div></div></label>
     </div>
     <div class="field" style="margin-top:12px">
       <label>Hauteur canaux</label>
       <div class="slider-row">
-        <input type="range" id="footer-bottom" min="90" max="320" value="162" step="1">
-        <span class="slider-val" id="footer-bottom-val">162px</span>
+        <input type="range" id="footer-bottom" min="90" max="320" value="90" step="1">
+        <span class="slider-val" id="footer-bottom-val">90px</span>
       </div>
     </div>
     <div class="field" style="margin-top:12px">
       <label>Hauteur hadith</label>
       <div class="slider-row">
-        <input type="range" id="hadith-top" min="-50" max="150" value="15" step="1">
-        <span class="slider-val" id="hadith-top-val">15px</span>
+        <input type="range" id="hadith-top" min="-50" max="150" value="30" step="1">
+        <span class="slider-val" id="hadith-top-val">30px</span>
       </div>
     </div>
   </div>
@@ -193,7 +193,7 @@ h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;te
         <div class="prophet-label">Peygamberimiz ﷺ şöyle buyurdu:</div>
         <div class="hadith-quote-wrap">
           <span class="q-open">“</span>
-          <div class="hadith-text" id="c-hadis-text" style="font-size:26px"></div>
+          <div class="hadith-text" id="c-hadis-text" style="font-size:28px"></div>
           <span class="q-close">”</span>
         </div>
         <div class="source-line"><div class="source-dots"><div class="diamond"></div><div class="dot"></div></div><div class="source-badge" id="c-kaynak">MÜSLİM, 2564</div><div class="source-dots"><div class="dot"></div><div class="diamond"></div></div></div>
@@ -276,6 +276,10 @@ function renderFooter(){
   }).join('');
 }
 renderFooter();
+// Apply default slider positions on load
+document.getElementById('card-footer').style.bottom = '90px';
+document.querySelector('.hadith-section').style.marginTop = '30px';
+document.getElementById('c-hadis-text').style.fontSize = '28px';
 
 [['gun','c-gun'],['gr-gun','c-gr-gun'],['gr-ay','c-gr-ay'],['gr-yil','c-gr-yil'],['hc-gun','c-hc-gun'],['hc-ay','c-hc-ay'],['hc-yil','c-hc-yil'],['hc-yil','c-hc-yil2'],['kaynak','c-kaynak']].forEach(([a,b])=>{
   const el=document.getElementById(a),target=document.getElementById(b);
