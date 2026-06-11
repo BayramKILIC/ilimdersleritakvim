@@ -32,7 +32,7 @@ h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;te
 .slider-row{display:flex;align-items:center;gap:10px}
 .slider-row input[type=range]{flex:1;accent-color:#d4a843}
 .slider-val{color:#d4a843;font-family:'Cinzel',serif;font-size:12px;min-width:32px;text-align:right}
-.bg-selector{display:flex;gap:8px}
+.bg-selector{display:flex;gap:8px;flex-wrap:wrap}
 .bg-slot{flex:1;position:relative;min-width:0}
 .bg-slot input[type=file]{display:none}
 .bg-preview-btn{width:100%;height:78px;background:#1a1005;border:1.5px solid #5a3c14;border-radius:8px;padding:6px 4px 25px;text-align:center;transition:border-color .15s,background .15s;cursor:pointer;position:relative;overflow:hidden}
@@ -126,6 +126,30 @@ h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;te
         </button>
         <label class="bg-change" for="bg-input-2">Değiştir</label>
       </div>
+      <div class="bg-slot" id="bg-btn-3">
+        <input type="file" id="bg-input-3" accept="image/*" onchange="loadBg(3,this)">
+        <button type="button" class="bg-preview-btn" onclick="chooseOrSelectBg(3)">
+          <img class="bg-preview" id="bg-prev-3" src="" alt="" style="display:none">
+          <span class="bg-lbl" id="bg-lbl-3">BG 4</span>
+        </button>
+        <label class="bg-change" for="bg-input-3">Değiştir</label>
+      </div>
+      <div class="bg-slot" id="bg-btn-4">
+        <input type="file" id="bg-input-4" accept="image/*" onchange="loadBg(4,this)">
+        <button type="button" class="bg-preview-btn" onclick="chooseOrSelectBg(4)">
+          <img class="bg-preview" id="bg-prev-4" src="" alt="" style="display:none">
+          <span class="bg-lbl" id="bg-lbl-4">BG 5</span>
+        </button>
+        <label class="bg-change" for="bg-input-4">Değiştir</label>
+      </div>
+      <div class="bg-slot" id="bg-btn-5">
+        <input type="file" id="bg-input-5" accept="image/*" onchange="loadBg(5,this)">
+        <button type="button" class="bg-preview-btn" onclick="chooseOrSelectBg(5)">
+          <img class="bg-preview" id="bg-prev-5" src="" alt="" style="display:none">
+          <span class="bg-lbl" id="bg-lbl-5">BG 6</span>
+        </button>
+        <label class="bg-change" for="bg-input-5">Değiştir</label>
+      </div>
     </div>
   </div>
   <div class="form-section">
@@ -150,8 +174,7 @@ h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;te
   </div>
   <div class="form-section">
     <div class="section-title">Hadis</div>
-    <div class="field"><label>Metin</label><textarea id="hadis-metin">Müslümanın her şeyi diğer Müslümana haramdır: kanı, malı ve onuru. Müslümanın her şeyi diğer Müslümana haramdır: kanı, malı ve onuru. Müslümanın her şeyi diğer Müslümana haramdır: kanı, malı ve onuru.</textarea></div>
-    <div class="field"><label>Vurgu (altın)</label><input type="text" id="hadis-vurgu" value="kanı, malı ve onuru."></div>
+    <div class="field"><label>Metin</label><textarea id="hadis-metin">Müslümanın her şeyi diğer Müslümana haramdır: [v]kanı, malı ve onuru.[/v] Müslümanın her şeyi diğer Müslümana haramdır: [v]kanı, malı ve onuru.[/v] Müslümanın her şeyi diğer Müslümana haramdır: [v]kanı, malı ve onuru.[/v]</textarea></div>
     <div class="field">
       <label>Yazı boyutu</label>
       <div class="slider-row"><input type="range" id="hadis-size" min="16" max="36" value="28" step="1"><span class="slider-val" id="hadis-size-val">28px</span></div>
@@ -220,7 +243,7 @@ const CHANNELS=[
   {name:'HADİS EHLİ KAYSERİ',handle:'telegram.me/AlimlerinSozleri'},
   {name:'HADİS EHLİ ERZURUM',handle:'telegram.me/hadisehlierzurum'},
 ];
-const bgData=[null,null,null];
+const bgData=[null,null,null,null,null,null];
 let activeBg=-1;
 
 // Auto-load bg1.jpg from server
@@ -277,6 +300,54 @@ let activeBg=-1;
   img.src = 'bg3.jpg';
 })();
 
+// Auto-load bg4.jpg
+(function(){
+  const img = new Image(); img.crossOrigin = 'anonymous';
+  img.onload = function(){
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth; c.height = img.naturalHeight;
+    c.getContext('2d').drawImage(img, 0, 0);
+    bgData[3] = c.toDataURL('image/jpeg', 0.95);
+    document.getElementById('bg-btn-3').classList.add('loaded');
+    const prev = document.getElementById('bg-prev-3');
+    prev.src = bgData[3]; prev.style.display = 'block';
+    document.getElementById('bg-lbl-3').textContent = 'bg4.jpg';
+  };
+  img.src = 'bg4.jpg';
+})();
+
+// Auto-load bg5.jpg
+(function(){
+  const img = new Image(); img.crossOrigin = 'anonymous';
+  img.onload = function(){
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth; c.height = img.naturalHeight;
+    c.getContext('2d').drawImage(img, 0, 0);
+    bgData[4] = c.toDataURL('image/jpeg', 0.95);
+    document.getElementById('bg-btn-4').classList.add('loaded');
+    const prev = document.getElementById('bg-prev-4');
+    prev.src = bgData[4]; prev.style.display = 'block';
+    document.getElementById('bg-lbl-4').textContent = 'bg5.jpg';
+  };
+  img.src = 'bg5.jpg';
+})();
+
+// Auto-load bg6.jpg
+(function(){
+  const img = new Image(); img.crossOrigin = 'anonymous';
+  img.onload = function(){
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth; c.height = img.naturalHeight;
+    c.getContext('2d').drawImage(img, 0, 0);
+    bgData[5] = c.toDataURL('image/jpeg', 0.95);
+    document.getElementById('bg-btn-5').classList.add('loaded');
+    const prev = document.getElementById('bg-prev-5');
+    prev.src = bgData[5]; prev.style.display = 'block';
+    document.getElementById('bg-lbl-5').textContent = 'bg6.jpg';
+  };
+  img.src = 'bg6.jpg';
+})();
+
 function chooseOrSelectBg(idx){
   if(bgData[idx]){selectBg(idx);return;}
   document.getElementById('bg-input-'+idx).click();
@@ -316,6 +387,32 @@ function renderFooter(){
   }).join('');
 }
 renderFooter();
+
+// Auto-remplissage de la date grégorienne
+(function(){
+  const MOIS=['OCAK','ŞUBAT','MART','NİSAN','MAYIS','HAZİRAN',
+              'TEMMUZ','AĞUSTOS','EYLÜL','EKİM','KASIM','ARALIK'];
+  const JOURS=['PAZAR','PAZARTESİ','SALI','ÇARŞAMBA','PERŞEMBE','CUMA','CUMARTESİ'];
+  const now=new Date();
+  const gun=String(now.getDate()).padStart(2,'0');
+  const ay=MOIS[now.getMonth()];
+  const yil=String(now.getFullYear());
+  const jour=JOURS[now.getDay()];
+
+  document.getElementById('gr-gun').value=gun;
+  document.getElementById('gr-ay').value=ay;
+  document.getElementById('gr-yil').value=yil;
+  document.getElementById('c-gr-gun').textContent=gun;
+  document.getElementById('c-gr-ay').textContent=ay;
+  document.getElementById('c-gr-yil').textContent=yil;
+
+  // Mettre à jour le select du jour
+  const sel=document.getElementById('gun');
+  for(let i=0;i<sel.options.length;i++){
+    if(sel.options[i].value===jour){sel.selectedIndex=i;break;}
+  }
+  document.getElementById('c-gun').textContent=jour;
+})();
 // Apply default slider positions on load
 document.getElementById('card-footer').style.bottom = '90px';
 document.querySelector('.hadith-section').style.marginTop = '30px';
@@ -327,30 +424,25 @@ document.getElementById('c-hadis-text').style.fontSize = '28px';
 });
 
 function renderHadith(){
-  const text=document.getElementById('hadis-metin').value;
-  const highlight=document.getElementById('hadis-vurgu').value.trim();
+  const raw=document.getElementById('hadis-metin').value;
   const target=document.getElementById('c-hadis-text');
-  target.textContent='';
-  if(!highlight){target.textContent=text;return;}
-  const index=text.indexOf(highlight);
-  if(index>=0){
-    target.append(document.createTextNode(text.slice(0,index)));
-    const span=document.createElement('span');
-    span.className='hadith-highlight';
-    span.textContent=highlight;
-    target.append(span,document.createTextNode(text.slice(index+highlight.length)));
-    return;
-  }
-  target.append(document.createTextNode(text));
-  target.append(document.createElement('br'));
-  const span=document.createElement('span');
-  span.className='hadith-highlight';
-  span.textContent=highlight;
-  target.append(span);
+  target.innerHTML='';
+  // Split on [v]...[/v] tags
+  const parts=raw.split(/(\[v\].*?\[\/v\])/gs);
+  parts.forEach(part=>{
+    const m=part.match(/^\[v\](.*?)\[\/v\]$/s);
+    if(m){
+      const span=document.createElement('span');
+      span.className='hadith-highlight';
+      span.textContent=m[1];
+      target.append(span);
+    } else {
+      target.append(document.createTextNode(part));
+    }
+  });
 }
 
 document.getElementById('hadis-metin').addEventListener('input',renderHadith);
-document.getElementById('hadis-vurgu').addEventListener('input',renderHadith);
 renderHadith();
 
 document.getElementById('hadis-size').addEventListener('input',function(){
