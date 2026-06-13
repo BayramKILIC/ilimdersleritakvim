@@ -180,6 +180,10 @@ h1{color:#d4a843;font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;te
       <div class="slider-row"><input type="range" id="hadis-size" min="16" max="36" value="28" step="1"><span class="slider-val" id="hadis-size-val">28px</span></div>
     </div>
     <div class="field"><label>Başlık</label><input type="text" id="baslik" value="Resûlullah ﷺ şöyle buyurdu:"></div>
+    <div class="field">
+      <label>Başlık boyutu</label>
+      <div class="slider-row"><input type="range" id="baslik-size" min="14" max="40" value="29" step="1"><span class="slider-val" id="baslik-size-val">29px</span></div>
+    </div>
     <div class="field"><label>Kaynak</label><input type="text" id="kaynak" value="MÜSLİM, 2564"></div>
   </div>
   <div class="form-section">
@@ -445,6 +449,11 @@ function renderHadith(){
 
 document.getElementById('hadis-metin').addEventListener('input',renderHadith);
 renderHadith();
+
+document.getElementById('baslik-size').addEventListener('input',function(){
+  document.getElementById('baslik-size-val').textContent=this.value+'px';
+  document.getElementById('c-baslik').style.fontSize=this.value+'px';
+});
 
 document.getElementById('hadis-size').addEventListener('input',function(){
   document.getElementById('hadis-size-val').textContent=this.value+'px';
